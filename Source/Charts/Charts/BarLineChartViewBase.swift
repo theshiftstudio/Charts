@@ -1932,27 +1932,34 @@ open class BarLineChartViewBase: ChartViewBase, BarLineScatterCandleBubbleChartD
         return getAxis(axis).isInverted
     }
     
-    /// The lowest x-index (value on the x-axis) that is still visible on he chart.
+    /// The lowest x-index (value on the x-axis) that is still visible on the chart.
     open var lowestVisibleX: Double
     {
+        guard let data = data else { return .zero }
+        guard data.xMin != Double.greatestFiniteMagnitude else { return .zero }
+
         var pt = CGPoint(
             x: viewPortHandler.contentLeft,
             y: viewPortHandler.contentBottom)
-        
+
         getTransformer(forAxis: .left).pixelToValues(&pt)
-        
-        return max(xAxis._axisMinimum, Double(pt.x))
+
+        return max(data.xMin, Double(pt.x))
     }
     
     /// The highest x-index (value on the x-axis) that is still visible on the chart.
     open var highestVisibleX: Double
     {
+        guard let data = data else { return .zero }
+        guard data.xMax != -Double.greatestFiniteMagnitude else { return .zero }
+
         var pt = CGPoint(
             x: viewPortHandler.contentRight,
             y: viewPortHandler.contentBottom)
-        
+
         getTransformer(forAxis: .left).pixelToValues(&pt)
 
-        return min(xAxis._axisMaximum, Double(pt.x))
+        return min(data.xMax, Double(pt.x))
     }
+
 }
